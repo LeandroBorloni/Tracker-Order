@@ -1,5 +1,43 @@
 document.querySelector("#save").addEventListener("click", cadastrarPedido)
 
+let pedidos = []
+
+window.addEventListener("load", () => {
+    pedidos = JSON.parse(localStorage.getItem("ListaDePedidos")) || []
+    atualizar()
+})
+
+document.querySelector("#busca").addEventListener("keyup", () => {
+    let busca = document.querySelector("#busca").value
+    let pedidosFiltrados = pedidos.filter((Pedido) => {
+        return Pedido.produto.includes(busca.toLowerCase())
+    })
+    filtrar(pedidosFiltrados)
+})
+
+document.querySelector("#pendentes").addEventListener("click", () => {
+    let pendente = document.querySelector("#pendentes")
+    let pedidosPendentes = pedidos.filter((Pedido) => {
+        return Pedido
+    })
+    filtrar(pedidosPendentes)
+})
+
+function filtrar (pedidos) {
+    document.querySelector("#pedidos").innerHTML = ""
+    pedidos.forEach((Pedido) => {
+        document.querySelector("#pedidos").innerHTML += createCard(Pedido)
+    })
+}
+
+function atualizar () {
+    document.querySelector("#pedidos").innerHTML = ""
+    localStorage.setItem("ListaDePedidos", JSON.stringify(pedidos))
+    pedidos.forEach((Pedido) => {
+        document.querySelector("#pedidos").innerHTML += createCard(Pedido)
+    })
+}
+
 function cadastrarPedido() {
     const pedido = document.querySelector("#pedido").value 
     const produto = document.querySelector("#produto").value 
@@ -7,16 +45,20 @@ function cadastrarPedido() {
     const modal = bootstrap.Modal.getInstance(document.querySelector("#exampleModal"))
 
     const Pedido = {
+        id: Date.now(),
         pedido: pedido,
         produto: produto,
-        pagamento: pagamento
+        pagamento: pagamento,
+        concluida: false
     }
 
     if(!validar(Pedido.pedido, document.querySelector("#pedido")))return
     if(!validar(Pedido.produto, document.querySelector("#produto")))return  
     if(!validar(Pedido.pagamento, document.querySelector("#pagamento")))return
 
-    document.querySelector("#pedidos").innerHTML += createCard(Pedido)
+    pedidos.push(Pedido)
+
+    atualizar()
 
     modal.hide()
 
@@ -34,11 +76,24 @@ function validar(valor, campo) {
     return true
 }
 
-function apagar(botao) {
-    botao.parentNode.parentNode.parentNode.remove()
+function apagar(id) {
+    pedidos = pedidos.filter((Pedido) => {
+        return Pedido.id != id
+    })
+
+    atualizar()
+}
+
+function concluir(id) {
+    let pedidoEncontrado = pedidos.find((Pedido) => {
+        return Pedido.id == id 
+    })
+    pedidoEncontrado.concluida = true
+    atualizar()
 }
 
 function createCard(Pedido){
+    let disable = Pedido.conlcuida ? "disabled" : ""
     return `
         <div class="col-lg-3 col-md-6 col-12">
             <div class="card text-center bg-gradient text-light" data-bs-theme="dark">
@@ -52,10 +107,10 @@ function createCard(Pedido){
                     <a href="#" class="btn btn-primary">Informações</a>
                 </div>
                 <div class="card-footer text-body-secondary">
-                    <a href="#" class="btn btn-success" title="Pedido Concluido">
+                    <a onClick="concluir(${Pedido.id})" href="#" class="btn btn-success ${disable}" title="Pedido Concluido">
                         <i class="bi bi-check-lg"></i>
                     </a>
-                    <a onclick="apagar(this)" href="#" class="btn btn-danger" title="Excluir pedido">
+                    <a onClick="apagar(${Pedido.id})" href="#" class="btn btn-danger" title="Excluir pedido">
                         <i class="bi bi-trash"></i>
                     </a>
                 </div>
