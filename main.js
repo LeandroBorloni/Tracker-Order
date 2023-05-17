@@ -2,11 +2,13 @@ document.querySelector("#save").addEventListener("click", cadastrarPedido)
 
 let pedidos = []
 
+/* Para carregar os pedidos (LocalStorage)*/
 window.addEventListener("load", () => {
     pedidos = JSON.parse(localStorage.getItem("ListaDePedidos")) || []
     atualizar()
 })
 
+/* Buscar pedidos */
 document.querySelector("#busca").addEventListener("keyup", () => {
     let busca = document.querySelector("#busca").value
     let pedidosFiltrados = pedidos.filter((Pedido) => {
@@ -15,14 +17,23 @@ document.querySelector("#busca").addEventListener("keyup", () => {
     filtrar(pedidosFiltrados)
 })
 
+/* Filtrar por pendentes */
 document.querySelector("#pendentes").addEventListener("click", () => {
-    let pendente = document.querySelector("#pendentes")
     let pedidosPendentes = pedidos.filter((Pedido) => {
-        return Pedido
+        return Pedido.concluida == false
     })
     filtrar(pedidosPendentes)
 })
 
+/* Filtar por concluidos */
+document.querySelector("#concluidos").addEventListener("click", () => {
+    let pedidosConcluidos = pedidos.filter((Pedido) => {
+        return Pedido.concluida == true
+    })
+    filtrar(pedidosConcluidos)
+})
+
+/* Função para filtar pedidos */
 function filtrar (pedidos) {
     document.querySelector("#pedidos").innerHTML = ""
     pedidos.forEach((Pedido) => {
@@ -30,6 +41,7 @@ function filtrar (pedidos) {
     })
 }
 
+/* Função para atualizar pedidos */
 function atualizar () {
     document.querySelector("#pedidos").innerHTML = ""
     localStorage.setItem("ListaDePedidos", JSON.stringify(pedidos))
@@ -38,6 +50,7 @@ function atualizar () {
     })
 }
 
+/* Função para cadastrar pedidos */
 function cadastrarPedido() {
     const pedido = document.querySelector("#pedido").value 
     const produto = document.querySelector("#produto").value 
@@ -64,6 +77,7 @@ function cadastrarPedido() {
 
 }
 
+/* Função para validação dos campos de cadastro */
 function validar(valor, campo) {
     if(valor == ""){
         campo.classList.add("is-invalid")
@@ -76,6 +90,7 @@ function validar(valor, campo) {
     return true
 }
 
+/* Apagar pedido */
 function apagar(id) {
     pedidos = pedidos.filter((Pedido) => {
         return Pedido.id != id
@@ -84,16 +99,19 @@ function apagar(id) {
     atualizar()
 }
 
+/* Concluir pedido */
 function concluir(id) {
     let pedidoEncontrado = pedidos.find((Pedido) => {
         return Pedido.id == id 
     })
     pedidoEncontrado.concluida = true
+    console.log(pedidoEncontrado)
     atualizar()
 }
 
+/* Criar o card do pedido */
 function createCard(Pedido){
-    let disable = Pedido.conlcuida ? "disabled" : ""
+    let disable = Pedido.concluida ? "disabled" : ""
     return `
         <div class="col-lg-3 col-md-6 col-12">
             <div class="card text-center bg-gradient text-light" data-bs-theme="dark">
