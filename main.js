@@ -135,3 +135,11 @@ function createCard(Pedido){
             </div> <!-- Card -->
         </div> <!-- Coluna -->`
 }
+
+/* Função ver produtos */
+document.querySelector("#botao-produtos").addEventListener("click", (Pedido) => {
+    document.querySelector("#produtos").innerHTML = "Os produtos cadastrados são: <br>"
+    pedidos.forEach((Pedido) => {
+        document.querySelector("#produtos").innerHTML += `- ${Pedido.produto} <br>`
+    })
+})

@@ -26,7 +26,9 @@
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item me-3">
-                        <a class="nav-link" href="#">Produtos</a>
+                        <a id="botao-produtos" class="nav-link" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            Produtos
+                        </a>
                     </li>
                     <li class="nav-item dropdown me-3">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -51,6 +53,12 @@
         </div>
     </nav>
     <div class="container mt-4">
+        <!-- Collapse -->
+        <div class="collapse mb-3" id="collapseExample">
+            <div class="card card-body bg-dark text-success" id="produtos">
+            
+            </div>
+        </div>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Cadastrar pedidos
@@ -88,11 +96,6 @@
                                 <option>Pix</option>
                             </select>
                         </div>
-                        <!--<div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>-->
                     </form>
                 </div>
                 <div class="modal-footer">
